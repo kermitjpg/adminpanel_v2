@@ -1,0 +1,117 @@
+<?php
+$sayfa = "Bankalar";
+include("inc/header.php");
+
+// Yetkisiz kullanıcının girmesini engellemek için etkinleştirebilirsiniz.
+// if ($_SESSION["yetki"] != "1") {
+//     echo '<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+//     echo "<script> Swal.fire( {title: 'Hata!', text:'Yetkisiz kullanıcı', icon:'error', confirmButtonText:'Kapat', confirmButtonColor: '#000', }).then((value)=>{
+//             if(value.isConfirmed){window.location.href='bankalar.php'}
+//         })</script>";
+//     exit;
+// }
+
+
+$sorgu4 = $baglanti->prepare("select * from bankalar where id=:id");
+$sorgu4->execute(['id' => $_GET['id']]);
+$sonuc4 = $sorgu4->fetch();
+
+
+if ($_POST) {
+    $aktif = 0;
+    if (isset($_POST["aktif"])) $aktif = 1;
+
+
+    if ($_POST["havale_hesap"] != '' && $_POST["havale_ad"] != '' && $_POST["havale_hesap_no"] != '' && $_POST["havale_sube"] != '' && $_POST["havale_iban"] != '') {
+
+        $ekleSorgu = $baglanti->prepare('UPDATE bankalar SET havale_hesap=:havale_hesap, havale_ad=:havale_ad, havale_hesap_no=:havale_hesap_no, havale_sube=:havale_sube, havale_iban=:havale_iban, aktif=:aktif WHERE id=:id');
+        $ekle = $ekleSorgu->execute([
+            'havale_hesap' => $_POST['havale_hesap'],
+            'havale_ad' => $_POST['havale_ad'],
+            'havale_hesap_no' => $_POST['havale_hesap_no'],
+            'havale_sube' => $_POST['havale_sube'],
+            'havale_iban' => $_POST['havale_iban'],
+            'aktif' => $aktif,
+            'id' => $_GET['id'],
+        ]);
+
+        if ($ekle) {
+            echo '<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+            echo "<script> Swal.fire( {title: 'Başarılı!', text:'Güncelleme başarılı!', icon:'success', confirmButtonText:'Kapat', confirmButtonColor: '#000', }).then((value)=>{
+            if(value.isConfirmed){window.location.href='bankalar.php'}
+        })</script>";
+        } else {
+            echo '<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+            echo "<script> Swal.fire( {title: 'Hata!', text:'Bir hata oluştu!', icon:'error', confirmButtonText:'Kapat', confirmButtonColor: '#000', })</script>";
+        }
+    }
+}
+
+
+
+?>
+
+
+<!-- Content -->
+<div class="content" style="height: 105vh;">
+    <!-- Animated -->
+    <div class="animated fadeIn">
+        <main>
+            <div class="container-fluid px-1 py-1 mt-1 mb-5">
+                <p class="col pt-0 px-0"><i class="fa-solid fa-circle-info fs-4"></i> Banka bilgilerini buradan düzenleyebilirsiniz.</p>
+                <div class="row row-cols-1 shadow rounded-end">
+
+                    <div class="col bg-secondary text-white rounded">
+                        <h6 class="p-3 pb-2">BANKALAR</h6>
+                    </div>
+                </div>
+
+
+                <div class="row bg-light">
+                    <div class="col">
+                        <form action="" method="post" enctype="multipart/form-data">
+
+
+                            <div class="form-group mt-2 mb-3">
+                                <label>Banka Adı</label>
+                                <input type="text" name="havale_hesap" required class="form-control" value="<?= $sonuc4["havale_hesap"] ?>">
+                            </div>
+
+                            <div class=" form-group mt-2 mb-3">
+                                <label>Hesap Sahibi</label>
+                                <input type="text" name="havale_ad" required class="form-control" value="<?= $sonuc4["havale_ad"] ?>">
+                            </div>
+
+                            <div class=" form-group mt-2 mb-3">
+                                <label>Hesap Numarası</label>
+                                <input type="text" name="havale_hesap_no" required class="form-control" value="<?= $sonuc4["havale_hesap_no"] ?>">
+                            </div>
+
+                            <div class=" form-group mt-2 mb-3">
+                                <label>Şube Kodu</label>
+                                <input type="text" name="havale_sube" required class="form-control" value="<?= $sonuc4["havale_sube"] ?>">
+                            </div>
+
+                            <div class=" form-group mt-2 mb-3">
+                                <label>Iban</label>
+                                <input type="text" name="havale_iban" required class="form-control" value="<?= $sonuc4["havale_iban"] ?>">
+                            </div>
+
+                            <div class="form-group my-3">
+                                <input type="submit" value="Güncelle" class="btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+<?php
+include("inc/footer.php")
+?>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
