@@ -1,8 +1,8 @@
 <?php
-$host = '127.0.0.1'; //localhost
-$dbname = 'midyepanel_v2';
-$username = 'root';
-$password = 'Biskuvi123';
+$host = 'host'; //localhost
+$dbname = 'databaseAdi';
+$username = 'kullaniciAdi';
+$password = 'databaseSifre';
 $charset = 'utf8';
 //$collate = 'utf8_unicode_ci';
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
